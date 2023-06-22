@@ -1,11 +1,12 @@
 package main
 
 import (
+	"log"
 	"os"
 	"time"
 
-	"gopkg.in/yaml.v2"
 	"github.com/prometheus/alertmanager/template"
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
@@ -19,13 +20,15 @@ type Notify struct {
 }
 
 type Pagerduty struct {
-	Key string
+	Key     string
+	Source  string
+	Details map[string]interface{}
 }
 
 type EvaluateType string
 
-const(
-	EvaluateEqual EvaluateType = "equal"
+const (
+	EvaluateEqual   EvaluateType = "equal"
 	EvaluateInclude EvaluateType = "include"
 )
 
@@ -44,5 +47,14 @@ func ParseConfig(path string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// naive error handling
+	if len(config.Notify.Pagerduty.Details) == 0 {
+		log.Fatal("notify.pagerduty.cannot config parameter cannot be empty")
+	}
+	if len(config.Notify.Pagerduty.Source) == 0 {
+		log.Fatal("notify.pagerduty.source config parameter cannot be empty")
+	}
+
 	return config, nil
 }

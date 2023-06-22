@@ -37,7 +37,7 @@ func main() {
 		log.Fatal(s.ListenAndServe())
 	}()
 
-	pagerDuty := NewPagerDutyNotify(config.Notify.Pagerduty.Key)
+	pagerDuty := NewPagerDutyNotify(config.Notify.Pagerduty.Key, config.Notify.Pagerduty.Source, config.Notify.Pagerduty.Details)
 	dms := NewDeadMansSwitch(evaluateMessage, config.Interval, pagerDuty.Notify)
 	go dms.Run()
 

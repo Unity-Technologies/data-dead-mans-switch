@@ -1,5 +1,5 @@
 package main
 
 type NotifyInterface interface {
-	Notify(summary, detail string) error
+	Notify(summary string) error
 }
