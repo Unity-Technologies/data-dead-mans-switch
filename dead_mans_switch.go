@@ -45,10 +45,10 @@ type DeadmansSwitch struct {
 	interval time.Duration
 	ticker   *time.Ticker
 	closer   chan struct{}
-	notifier func(summary, detail string) error
+	notifier func(summary string) error
 }
 
-func NewDeadMansSwitch(message <-chan string, interval time.Duration, notifier func(summary, detail string) error) *DeadmansSwitch {
+func NewDeadMansSwitch(message <-chan string, interval time.Duration, notifier func(summary string) error) *DeadmansSwitch {
 	return &DeadmansSwitch{
 		message:  message,
 		interval: interval,
@@ -66,7 +66,7 @@ func (d *DeadmansSwitch) Run() error {
 		select {
 		case <-d.ticker.C:
 			if !skip {
-				d.Notify("WatchdogDown", "alerting pipeline is unhealthy")
+				d.Notify("dead-man-switch received no alerts from alertmanager (Watchdog)")
 			} else {
 				log.Println("received Deadman's Switch alert, skip notify")
 			}
@@ -90,8 +90,8 @@ func (d *DeadmansSwitch) Run() error {
 }
 
 // Notify send special message to notifier
-func (d *DeadmansSwitch) Notify(summary, detail string) {
-	if err := d.notifier(summary, detail); err != nil {
+func (d *DeadmansSwitch) Notify(summary string) {
+	if err := d.notifier(summary); err != nil {
 		failedNotifications.Inc()
 		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 	}

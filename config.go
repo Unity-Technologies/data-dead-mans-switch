@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 	"time"
 
@@ -19,7 +20,9 @@ type Notify struct {
 }
 
 type Pagerduty struct {
-	Key string
+	Key     string
+	Source  string
+	Details map[string]interface{}
 }
 
 type EvaluateType string
@@ -44,5 +47,14 @@ func ParseConfig(path string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// naive error handling
+	if len(config.Notify.Pagerduty.Details) == 0 {
+		log.Fatal("notify.pagerduty.cannot config parameter cannot be empty")
+	}
+	if len(config.Notify.Pagerduty.Source) == 0 {
+		log.Fatal("notify.pagerduty.source config parameter cannot be empty")
+	}
+
 	return config, nil
 }
