@@ -62,7 +62,6 @@ func (d *DeadmansSwitch) Run() error {
 	d.ticker = time.NewTicker(d.interval)
 
 	skip := false
-
 	for {
 		select {
 		case <-d.ticker.C:

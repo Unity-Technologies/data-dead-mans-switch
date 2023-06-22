@@ -11,10 +11,11 @@ var _ NotifyInterface = new(PagerDuty)
 
 type PagerDuty struct {
 	AuthKey string
+	Details string
 }
 
-func NewPagerDutyNotify(authKey string) *PagerDuty {
-	return &PagerDuty{AuthKey: authKey}
+func NewPagerDutyNotify(authKey string, details string) *PagerDuty {
+	return &PagerDuty{AuthKey: authKey, Details: details}
 }
 
 // Notify send notify message to pagerduty
@@ -25,10 +26,10 @@ func (p *PagerDuty) Notify(summary, detail string) error {
 		Source:    "DeadMansSwitch",
 		Severity:  "critical",
 		Timestamp: time.Now().Format(time.RFC3339),
-		Details:   detail,
+		Details:   p.Details,
 		Group:     "DeadMansSwitch",
 		// used for group alerting event
-		Class:     summary,
+		Class: summary,
 	}
 
 	event := pagerduty.V2Event{

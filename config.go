@@ -4,8 +4,8 @@ import (
 	"os"
 	"time"
 
-	"gopkg.in/yaml.v2"
 	"github.com/prometheus/alertmanager/template"
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
@@ -24,8 +24,8 @@ type Pagerduty struct {
 
 type EvaluateType string
 
-const(
-	EvaluateEqual EvaluateType = "equal"
+const (
+	EvaluateEqual   EvaluateType = "equal"
 	EvaluateInclude EvaluateType = "include"
 )
 
